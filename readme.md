@@ -14,11 +14,13 @@ Its usage is recommended for CodeIgniter 2 or greater.
 ```php
 $this->load->helper('pdfexport');
 
-$data['title'] = "Annual Report"; // it can be any variable that the code will use
+$data['title'] = "Annual Report"; // it can be any variable with content that the code will use
 
+$fileName = date('YmdHis') . "_report";
 $pdfView  = $this->load->view('pdf/pdf_template', $data, TRUE); // we need to use a view as PDF content
+$cssView  = $this->load->view('pdf/pdf_template_css', NULL, TRUE); // the use a css stylesheet is optional
 
-exportMeAsMPDF($pdfView, date('YmdHis') . "_report"); // then define the content and filename
+exportMeAsMPDF($fileName, $pdfView, $cssView, 'P'); // then define the content and filename
 ```
 
 ![Ale Mohamad](http://alemohamad.com/github/logo2012am.png)

@@ -2,24 +2,24 @@
 
 if (!function_exists('exportMeAsMPDF'))
 {
-    function exportMeAsMPDF($htmView, $fileName) {
+    function exportMeAsMPDF($fileName, $htmlView, $css = '', $orientation = 'P', $zoom = 'fullpage') {
         $CI =& get_instance();
-        $CI->load->library('mpdf54/mpdf');
-        // $CI->mpdf=new mPDF('c','A4','','',32,25,27,25,16,13);
-        $CI->mpdf->AliasNbPages('[pagetotal]');
-        $CI->mpdf->SetHTMLHeader('{PAGENO}/{nb}', '1', true);
-        $CI->mpdf->SetDisplayMode('fullpage');
-        $CI->mpdf->pagenumPrefix = 'Page number ';
-        $CI->mpdf->pagenumSuffix = ' - ';
-        $CI->mpdf->nbpgPrefix = ' out of ';
-        $CI->mpdf->nbpgSuffix = ' pages';
-        $CI->mpdf->SetHeader('{PAGENO}{nbpg}');
-        $CI->mpdf = new mPDF('', 'A4', 0, '', 12, 12, 10, 10, 5, 5);
-        $style = base_url().'/source/template/css/stylesheet.css';
-        $stylesheet = file_get_contents($style);
-        $CI->mpdf->WriteHTML($stylesheet, 1);
-        $CI->mpdf->WriteHTML($htmView, 2);
-        $CI->mpdf->Output($fileName . '.pdf','D');
+        $CI->load->library('mpdf57/mpdf');
+        // mpdf documentation: http://mpdf1.com/manual/index.php?tid=184
+        $CI->mpdf->AddPage($orientation, // L - landscape, P - portrait
+                    'A4', '', '', '',
+                    12, // margin_left
+                    12, // margin right
+                    10, // margin top
+                    10, // margin bottom
+                    5, // margin header
+                    5); // margin footer
+        if( !empty($css) ) {
+            $CI->mpdf->WriteHTML($css, 1);
+        }
+        $CI->mpdf->WriteHTML($htmlView, 2);
+        $CI->mpdf->SetDisplayMode($zoom); // default, fullpage, fullwidth, real, 0-100
+        $CI->mpdf->Output($fileName . '.pdf','D'); // D - Force download, I - View in explorer
     }
 }
 
